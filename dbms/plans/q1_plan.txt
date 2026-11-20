@@ -1,0 +1,30 @@
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=3774.52..3774.55 rows=10 width=46) (actual time=19.793..19.796 rows=10 loops=1)
+   Buffers: shared hit=1205
+   ->  Sort  (cost=3774.52..3824.52 rows=20000 width=46) (actual time=19.793..19.794 rows=10 loops=1)
+         Sort Key: (sum(p.amount)) DESC
+         Sort Method: top-N heapsort  Memory: 26kB
+         Buffers: shared hit=1205
+         ->  HashAggregate  (cost=3092.33..3342.33 rows=20000 width=46) (actual time=16.628..18.617 rows=14195 loops=1)
+               Group Key: u.id
+               Batches: 1  Memory Usage: 6673kB
+               Buffers: shared hit=1202
+               ->  Hash Join  (cost=717.00..2967.53 rows=24960 width=20) (actual time=2.510..12.145 rows=24942 loops=1)
+                     Hash Cond: (p.user_id = u.id)
+                     Buffers: shared hit=1202
+                     ->  Seq Scan on payments p  (cost=0.00..2185.00 rows=24960 width=10) (actual time=0.004..6.722 rows=24942 loops=1)
+                           Filter: (status = 'success'::text)
+                           Rows Removed by Filter: 75058
+                           Buffers: shared hit=935
+                     ->  Hash  (cost=467.00..467.00 rows=20000 width=14) (actual time=2.489..2.489 rows=20000 loops=1)
+                           Buckets: 32768  Batches: 1  Memory Usage: 1164kB
+                           Buffers: shared hit=267
+                           ->  Seq Scan on users u  (cost=0.00..467.00 rows=20000 width=14) (actual time=0.002..1.195 rows=20000 loops=1)
+                                 Buffers: shared hit=267
+ Planning:
+   Buffers: shared hit=158
+ Planning Time: 0.325 ms
+ Execution Time: 19.889 ms
+(26 rows)
+

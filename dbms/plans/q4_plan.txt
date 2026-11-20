@@ -1,0 +1,35 @@
+                                                                      QUERY PLAN                                                                      
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=4719.64..4877.29 rows=50 width=38) (actual time=8.687..9.669 rows=50 loops=1)
+   Buffers: shared hit=2323
+   ->  Nested Loop  (cost=4719.64..14695.43 rows=3164 width=38) (actual time=8.687..9.668 rows=50 loops=1)
+         Buffers: shared hit=2323
+         ->  Gather Merge  (cost=4719.34..6138.50 rows=12452 width=32) (actual time=8.666..9.259 rows=194 loops=1)
+               Workers Planned: 1
+               Workers Launched: 1
+               Buffers: shared hit=1741
+               ->  Sort  (cost=3719.33..3737.64 rows=7325 width=32) (actual time=7.917..7.935 rows=570 loops=2)
+                     Sort Key: we.received_at DESC
+                     Sort Method: quicksort  Memory: 721kB
+                     Buffers: shared hit=1741
+                     Worker 0:  Sort Method: quicksort  Memory: 633kB
+                     ->  Parallel Seq Scan on webhook_events we  (cost=0.00..3249.12 rows=7325 width=32) (actual time=0.007..7.285 rows=6202 loops=2)
+                           Filter: (received_at >= (now() - '30 days'::interval))
+                           Rows Removed by Filter: 68798
+                           Buffers: shared hit=1705
+         ->  Memoize  (cost=0.30..0.71 rows=1 width=10) (actual time=0.002..0.002 rows=0 loops=194)
+               Cache Key: we.payment_id
+               Cache Mode: logical
+               Hits: 0  Misses: 194  Evictions: 0  Overflows: 0  Memory Usage: 15kB
+               Buffers: shared hit=582
+               ->  Index Scan using payments_pkey on payments p  (cost=0.29..0.70 rows=1 width=10) (actual time=0.002..0.002 rows=0 loops=194)
+                     Index Cond: (id = we.payment_id)
+                     Filter: (status = 'failed'::text)
+                     Rows Removed by Filter: 1
+                     Buffers: shared hit=582
+ Planning:
+   Buffers: shared hit=213
+ Planning Time: 0.286 ms
+ Execution Time: 9.727 ms
+(31 rows)
+

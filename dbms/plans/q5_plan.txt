@@ -1,0 +1,19 @@
+                                                        QUERY PLAN                                                        
+--------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=4070.39..4694.39 rows=24960 width=48) (actual time=7.192..8.721 rows=13 loops=1)
+   Group Key: (date_trunc('month'::text, created_at))
+   Buffers: shared hit=938
+   ->  Sort  (cost=4070.39..4132.79 rows=24960 width=14) (actual time=7.128..7.625 rows=24942 loops=1)
+         Sort Key: (date_trunc('month'::text, created_at))
+         Sort Method: quicksort  Memory: 2133kB
+         Buffers: shared hit=938
+         ->  Seq Scan on payments  (cost=0.00..2247.40 rows=24960 width=14) (actual time=0.006..6.004 rows=24942 loops=1)
+               Filter: (status = 'success'::text)
+               Rows Removed by Filter: 75058
+               Buffers: shared hit=935
+ Planning:
+   Buffers: shared hit=97
+ Planning Time: 0.149 ms
+ Execution Time: 8.749 ms
+(15 rows)
+

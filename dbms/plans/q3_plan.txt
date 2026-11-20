@@ -1,0 +1,30 @@
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2014.18..2014.23 rows=20 width=22) (actual time=8.726..8.727 rows=20 loops=1)
+   Buffers: shared hit=611
+   ->  Sort  (cost=2014.18..2030.85 rows=6667 width=22) (actual time=8.725..8.726 rows=20 loops=1)
+         Sort Key: (count(ak.id)) DESC
+         Sort Method: top-N heapsort  Memory: 27kB
+         Buffers: shared hit=611
+         ->  HashAggregate  (cost=1586.77..1836.77 rows=6667 width=22) (actual time=7.601..8.304 rows=8874 loops=1)
+               Group Key: u.id
+               Filter: (count(ak.id) > 1)
+               Batches: 1  Memory Usage: 2065kB
+               Rows Removed by Filter: 6696
+               Buffers: shared hit=608
+               ->  Hash Join  (cost=717.00..1436.77 rows=30000 width=18) (actual time=1.835..5.111 rows=30000 loops=1)
+                     Hash Cond: (ak.user_id = u.id)
+                     Buffers: shared hit=608
+                     ->  Seq Scan on api_keys ak  (cost=0.00..641.00 rows=30000 width=8) (actual time=0.001..0.763 rows=30000 loops=1)
+                           Buffers: shared hit=341
+                     ->  Hash  (cost=467.00..467.00 rows=20000 width=14) (actual time=1.819..1.819 rows=20000 loops=1)
+                           Buckets: 32768  Batches: 1  Memory Usage: 1164kB
+                           Buffers: shared hit=267
+                           ->  Seq Scan on users u  (cost=0.00..467.00 rows=20000 width=14) (actual time=0.002..0.892 rows=20000 loops=1)
+                                 Buffers: shared hit=267
+ Planning:
+   Buffers: shared hit=185
+ Planning Time: 0.295 ms
+ Execution Time: 8.798 ms
+(26 rows)
+

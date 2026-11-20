@@ -1,0 +1,14 @@
+                                                      QUERY PLAN                                                      
+----------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=2935.00..2935.07 rows=3 width=55) (actual time=11.574..11.575 rows=3 loops=1)
+   Group Key: provider
+   Batches: 1  Memory Usage: 24kB
+   Buffers: shared hit=935
+   ->  Seq Scan on payments  (cost=0.00..1935.00 rows=100000 width=14) (actual time=0.003..2.423 rows=100000 loops=1)
+         Buffers: shared hit=935
+ Planning:
+   Buffers: shared hit=79
+ Planning Time: 0.166 ms
+ Execution Time: 11.595 ms
+(10 rows)
+
