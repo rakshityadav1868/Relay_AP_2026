@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const prisma = require("../db");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -80,6 +81,14 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "something went wrong" });
   }
+});
+
+router.get("/me", auth, (req, res) => {
+  res.json({
+    id: req.user.id,
+    name: req.user.name,
+    email: req.user.email
+  });
 });
 
 module.exports = router;
