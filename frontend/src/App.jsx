@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Login from "./Login";
+import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 
 export default function App() {
@@ -17,6 +18,10 @@ export default function App() {
 
   if (token) {
     return <Dashboard onLogout={handleLogout} />;
+  }
+
+  if (page === "signup") {
+    return <Signup onNavigateLogin={() => setPage("login")} />;
   }
 
   return (
