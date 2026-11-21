@@ -1,0 +1,56 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  apiKeys      ApiKey[]
+  payments     Payment[]
+
+  @@map("users")
+}
+
+model ApiKey {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  keyHash   String   @unique @map("key_hash")
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}
+
+model Payment {
+  id            Int            @id @default(autoincrement())
+  userId        Int            @map("user_id")
+  amount        Decimal        @db.Decimal(10, 2)
+  currency      String         @default("INR") @db.VarChar(3)
+  provider      String
+  status        String         @default("pending")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  user          User           @relation(fields: [userId], references: [id])
+  webhookEvents WebhookEvent[]
+
+  @@map("payments")
+}
+
+model WebhookEvent {
+  id         Int      @id @default(autoincrement())
+  paymentId  Int      @map("payment_id")
+  eventType  String   @map("event_type")
+  payload    String?
+  receivedAt DateTime @default(now()) @map("received_at")
+  payment    Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@map("webhook_events")
+}
