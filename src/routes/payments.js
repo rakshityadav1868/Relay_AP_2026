@@ -1,7 +1,9 @@
 const express = require("express");
+const Stripe = require("stripe");
 const prisma = require("../db");
 
 const router = express.Router();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
 
 router.post("/", async (req, res) => {
   try {
@@ -9,6 +11,13 @@ router.post("/", async (req, res) => {
 
     if (!amount || !provider) {
       return res.status(400).json({ error: "missing required fields" });
+    }
+
+    if (provider === "stripe") {
+      await stripe.paymentIntents.create({
+        amount: Math.round(parseFloat(amount) * 100),
+        currency: (currency || "inr").toLowerCase()
+      });
     }
 
     const payment = await prisma.payment.create({
