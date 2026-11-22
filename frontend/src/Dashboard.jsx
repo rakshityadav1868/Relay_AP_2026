@@ -1,4 +1,5 @@
 import ApiKeys from "./ApiKeys";
+import Payments from "./Payments";
 
 export default function Dashboard({ onLogout }) {
   const handleLogout = () => {
@@ -17,6 +18,7 @@ export default function Dashboard({ onLogout }) {
         Log Out
       </button>
       <ApiKeys />
+      <Payments />
     </div>
   );
 }
