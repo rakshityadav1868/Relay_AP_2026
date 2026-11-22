@@ -1,3 +1,5 @@
+import ApiKeys from "./ApiKeys";
+
 export default function Dashboard({ onLogout }) {
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -14,6 +16,7 @@ export default function Dashboard({ onLogout }) {
       >
         Log Out
       </button>
+      <ApiKeys />
     </div>
   );
 }
