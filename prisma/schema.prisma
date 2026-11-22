@@ -36,6 +36,7 @@ model Payment {
   amount        Decimal        @db.Decimal(10, 2)
   currency      String         @default("INR") @db.VarChar(3)
   provider      String
+  providerRef   String?        @unique @map("provider_ref")
   status        String         @default("pending")
   createdAt     DateTime       @default(now()) @map("created_at")
   user          User           @relation(fields: [userId], references: [id])

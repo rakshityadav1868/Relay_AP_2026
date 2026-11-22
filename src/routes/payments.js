@@ -18,18 +18,22 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "missing required fields" });
     }
 
+    let providerRef = null;
+
     if (provider === "stripe") {
-      await stripe.paymentIntents.create({
+      const intent = await stripe.paymentIntents.create({
         amount: Math.round(parseFloat(amount) * 100),
         currency: (currency || "inr").toLowerCase()
       });
+      providerRef = intent.id;
     }
 
     if (provider === "razorpay") {
-      await razorpay.orders.create({
+      const order = await razorpay.orders.create({
         amount: Math.round(parseFloat(amount) * 100),
         currency: currency || "INR"
       });
+      providerRef = order.id;
     }
 
     const payment = await prisma.payment.create({
@@ -38,6 +42,7 @@ router.post("/", async (req, res) => {
         amount: parseFloat(amount),
         currency: currency || "INR",
         provider,
+        providerRef,
         status: "pending"
       }
     });
