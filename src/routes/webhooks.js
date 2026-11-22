@@ -24,10 +24,24 @@ router.post("/stripe", express.raw({ type: "application/json" }), async (req, re
   if (event.type === "payment_intent.succeeded" || event.type === "payment_intent.payment_failed") {
     const status = event.type === "payment_intent.succeeded" ? "succeeded" : "failed";
 
-    await prisma.payment.updateMany({
-      where: { providerRef: intent.id },
-      data: { status }
+    const payment = await prisma.payment.findUnique({
+      where: { providerRef: intent.id }
     });
+
+    if (payment) {
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: { status }
+      });
+
+      await prisma.webhookEvent.create({
+        data: {
+          paymentId: payment.id,
+          eventType: event.type,
+          payload: req.body.toString()
+        }
+      });
+    }
   }
 
   res.json({ received: true });
@@ -45,15 +59,29 @@ router.post("/razorpay", express.raw({ type: "application/json" }), async (req, 
   }
 
   const event = JSON.parse(req.body);
-  const payment = event.payload.payment.entity;
+  const entity = event.payload.payment.entity;
 
   if (event.event === "payment.captured" || event.event === "payment.failed") {
     const status = event.event === "payment.captured" ? "succeeded" : "failed";
 
-    await prisma.payment.updateMany({
-      where: { providerRef: payment.order_id },
-      data: { status }
+    const payment = await prisma.payment.findUnique({
+      where: { providerRef: entity.order_id }
     });
+
+    if (payment) {
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: { status }
+      });
+
+      await prisma.webhookEvent.create({
+        data: {
+          paymentId: payment.id,
+          eventType: event.event,
+          payload: req.body.toString()
+        }
+      });
+    }
   }
 
   res.json({ received: true });
