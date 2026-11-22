@@ -32,4 +32,18 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+router.get("/", auth, async (req, res) => {
+  try {
+    const keys = await prisma.apiKey.findMany({
+      where: { userId: req.user.id },
+      select: { id: true, name: true, createdAt: true },
+      orderBy: { createdAt: "desc" }
+    });
+
+    res.json(keys);
+  } catch (err) {
+    res.status(500).json({ error: "something went wrong" });
+  }
+});
+
 module.exports = router;
