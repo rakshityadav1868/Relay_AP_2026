@@ -87,4 +87,19 @@ router.post("/razorpay", express.raw({ type: "application/json" }), async (req, 
   res.json({ received: true });
 });
 
+router.get("/payment/:paymentId", async (req, res) => {
+  const paymentId = parseInt(req.params.paymentId);
+
+  if (isNaN(paymentId)) {
+    return res.status(400).json({ error: "invalid payment id" });
+  }
+
+  const events = await prisma.webhookEvent.findMany({
+    where: { paymentId },
+    orderBy: { receivedAt: "desc" }
+  });
+
+  res.json(events);
+});
+
 module.exports = router;

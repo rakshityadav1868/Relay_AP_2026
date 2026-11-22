@@ -1,5 +1,6 @@
 import ApiKeys from "./ApiKeys";
 import Payments from "./Payments";
+import WebhookEvents from "./WebhookEvents";
 
 export default function Dashboard({ onLogout }) {
   const handleLogout = () => {
@@ -19,6 +20,7 @@ export default function Dashboard({ onLogout }) {
       </button>
       <ApiKeys />
       <Payments />
+      <WebhookEvents />
     </div>
   );
 }
