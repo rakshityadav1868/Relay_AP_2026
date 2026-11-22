@@ -4,10 +4,12 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const apiKeyRoutes = require("./routes/apiKeys");
 const paymentRoutes = require("./routes/payments");
+const webhookRoutes = require("./routes/webhooks");
 
 const app = express();
 
 app.use(cors());
+app.use("/webhooks", webhookRoutes);
 app.use(express.json());
 
 app.use("/auth", authRoutes);
