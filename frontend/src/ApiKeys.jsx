@@ -60,6 +60,26 @@ export default function ApiKeys() {
     }
   };
 
+  const deleteKey = async (id) => {
+    setError("");
+    try {
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Could not delete key");
+        return;
+      }
+
+      loadKeys();
+    } catch (err) {
+      setError("Cannot connect to server");
+    }
+  };
+
   return (
     <div style={{ marginTop: "30px" }}>
       <h3>API Keys</h3>
@@ -89,6 +109,12 @@ export default function ApiKeys() {
           {keys.map((key) => (
             <li key={key.id} style={{ marginBottom: "8px" }}>
               {key.name || "Unnamed key"} (created {new Date(key.createdAt).toLocaleString()})
+              <button
+                onClick={() => deleteKey(key.id)}
+                style={{ marginLeft: "10px", padding: "4px 10px", cursor: "pointer" }}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
