@@ -46,4 +46,30 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "invalid id" });
+    }
+
+    const apiKey = await prisma.apiKey.findUnique({
+      where: { id }
+    });
+
+    if (!apiKey || apiKey.userId !== req.user.id) {
+      return res.status(404).json({ error: "api key not found" });
+    }
+
+    await prisma.apiKey.delete({
+      where: { id }
+    });
+
+    res.json({ message: "api key deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "something went wrong" });
+  }
+});
+
 module.exports = router;
