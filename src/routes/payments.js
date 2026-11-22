@@ -1,9 +1,14 @@
 const express = require("express");
 const Stripe = require("stripe");
+const Razorpay = require("razorpay");
 const prisma = require("../db");
 
 const router = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder",
+  key_secret: process.env.RAZORPAY_KEY_SECRET || "placeholder"
+});
 
 router.post("/", async (req, res) => {
   try {
@@ -17,6 +22,13 @@ router.post("/", async (req, res) => {
       await stripe.paymentIntents.create({
         amount: Math.round(parseFloat(amount) * 100),
         currency: (currency || "inr").toLowerCase()
+      });
+    }
+
+    if (provider === "razorpay") {
+      await razorpay.orders.create({
+        amount: Math.round(parseFloat(amount) * 100),
+        currency: currency || "INR"
       });
     }
 
