@@ -66,13 +66,26 @@ export default function ProviderKeys() {
   };
 
   return (
-    <div style={{ marginTop: "30px" }}>
-      <h3>Your Payment Provider Keys</h3>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {message && <p style={{ color: "green" }}>{message}</p>}
+    <div className="card fade-in">
+      <h3 style={{ margin: "0 0 4px", fontSize: "16px" }}>Your Payment Provider Keys</h3>
+      <p style={{ margin: "0 0 16px", fontSize: "13px", color: "var(--text-secondary)" }}>
+        Relay uses your own Stripe/Razorpay credentials to create payments — it never holds your money.
+      </p>
+      {error && <p style={{ color: "var(--critical)", fontSize: "13px" }}>{error}</p>}
+      {message && <p style={{ color: "var(--good)", fontSize: "13px" }}>{message}</p>}
 
       {saved && (
-        <div style={{ marginBottom: "16px", fontSize: "14px" }}>
+        <div
+          style={{
+            marginBottom: "16px",
+            fontSize: "13px",
+            color: "var(--text-secondary)",
+            background: "var(--surface-2)",
+            border: "1px solid var(--border)",
+            borderRadius: "8px",
+            padding: "12px"
+          }}
+        >
           <p style={{ margin: "4px 0" }}>Stripe secret key: {saved.stripeSecretKey || "not set"}</p>
           <p style={{ margin: "4px 0" }}>Razorpay key id: {saved.razorpayKeyId || "not set"}</p>
           <p style={{ margin: "4px 0" }}>Razorpay key secret: {saved.razorpayKeySecret || "not set"}</p>
@@ -80,37 +93,37 @@ export default function ProviderKeys() {
       )}
 
       <form onSubmit={handleSave}>
-        <div style={{ marginBottom: "10px" }}>
-          <label style={{ display: "block", marginBottom: "4px" }}>Stripe Secret Key:</label>
+        <div style={{ marginBottom: "12px" }}>
+          <label className="label">Stripe Secret Key</label>
           <input
             type="text"
             placeholder="sk_test_..."
             value={stripeSecretKey}
             onChange={(e) => setStripeSecretKey(e.target.value)}
-            style={{ padding: "8px", width: "100%", boxSizing: "border-box" }}
+            style={{ padding: "9px 12px", width: "100%" }}
           />
         </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label style={{ display: "block", marginBottom: "4px" }}>Razorpay Key Id:</label>
+        <div style={{ marginBottom: "12px" }}>
+          <label className="label">Razorpay Key Id</label>
           <input
             type="text"
             placeholder="rzp_test_..."
             value={razorpayKeyId}
             onChange={(e) => setRazorpayKeyId(e.target.value)}
-            style={{ padding: "8px", width: "100%", boxSizing: "border-box" }}
+            style={{ padding: "9px 12px", width: "100%" }}
           />
         </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label style={{ display: "block", marginBottom: "4px" }}>Razorpay Key Secret:</label>
+        <div style={{ marginBottom: "16px" }}>
+          <label className="label">Razorpay Key Secret</label>
           <input
             type="text"
             placeholder="key secret"
             value={razorpayKeySecret}
             onChange={(e) => setRazorpayKeySecret(e.target.value)}
-            style={{ padding: "8px", width: "100%", boxSizing: "border-box" }}
+            style={{ padding: "9px 12px", width: "100%" }}
           />
         </div>
-        <button type="submit" style={{ padding: "8px 16px", cursor: "pointer" }}>
+        <button type="submit" className="btn-primary">
           Save Keys
         </button>
       </form>

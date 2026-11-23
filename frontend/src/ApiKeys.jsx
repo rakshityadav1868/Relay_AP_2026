@@ -81,38 +81,61 @@ export default function ApiKeys() {
   };
 
   return (
-    <div style={{ marginTop: "30px" }}>
-      <h3>API Keys</h3>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <div style={{ marginBottom: "16px" }}>
+    <div className="card fade-in">
+      <h3 style={{ margin: "0 0 16px", fontSize: "16px" }}>API Keys</h3>
+      {error && <p style={{ color: "var(--critical)", fontSize: "13px" }}>{error}</p>}
+      <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
         <input
           type="text"
           placeholder="Key name (optional)"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          style={{ padding: "8px", marginRight: "8px" }}
+          style={{ padding: "9px 12px", flex: 1 }}
         />
-        <button onClick={createKey} style={{ padding: "8px 16px", cursor: "pointer" }}>
+        <button onClick={createKey} className="btn-primary">
           Create New Key
         </button>
       </div>
       {newKey && (
-        <div style={{ background: "#ffffcc", padding: "10px", marginBottom: "16px", wordBreak: "break-all" }}>
-          <p style={{ margin: "0 0 6px 0" }}>Copy your key now, it won't be shown again:</p>
-          <code>{newKey}</code>
+        <div
+          style={{
+            background: "rgba(250,178,25,0.1)",
+            border: "1px solid rgba(250,178,25,0.3)",
+            borderRadius: "8px",
+            padding: "10px",
+            marginBottom: "16px",
+            wordBreak: "break-all"
+          }}
+        >
+          <p style={{ margin: "0 0 6px 0", fontSize: "13px", color: "var(--text-secondary)" }}>
+            Copy your key now, it won't be shown again:
+          </p>
+          <code style={{ color: "var(--warning)" }}>{newKey}</code>
         </div>
       )}
       {keys.length === 0 ? (
-        <p>No API keys yet.</p>
+        <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>No API keys yet.</p>
       ) : (
-        <ul style={{ paddingLeft: "20px" }}>
+        <ul style={{ paddingLeft: 0, listStyle: "none", margin: 0 }}>
           {keys.map((key) => (
-            <li key={key.id} style={{ marginBottom: "8px" }}>
-              {key.name || "Unnamed key"} (created {new Date(key.createdAt).toLocaleString()})
-              <button
-                onClick={() => deleteKey(key.id)}
-                style={{ marginLeft: "10px", padding: "4px 10px", cursor: "pointer" }}
-              >
+            <li
+              key={key.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "10px 0",
+                borderBottom: "1px solid var(--border)",
+                fontSize: "13.5px"
+              }}
+            >
+              <span>
+                {key.name || "Unnamed key"}{" "}
+                <span style={{ color: "var(--text-muted)" }}>
+                  (created {new Date(key.createdAt).toLocaleString()})
+                </span>
+              </span>
+              <button onClick={() => deleteKey(key.id)} className="btn-ghost">
                 Delete
               </button>
             </li>

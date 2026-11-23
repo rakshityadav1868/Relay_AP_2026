@@ -41,55 +41,115 @@ export default function Signup({ onNavigateLogin }) {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "50px auto", padding: "20px", fontFamily: "sans-serif" }}>
-      <h2>Sign Up</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "12px" }}>
-          <label style={{ display: "block", marginBottom: "4px" }}>Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
-          />
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background:
+          "radial-gradient(circle at 30% 20%, rgba(57,135,229,0.10), transparent 45%), radial-gradient(circle at 80% 80%, rgba(12,163,12,0.08), transparent 45%), #0a0a0a"
+      }}
+    >
+      <div className="card fade-in" style={{ width: "360px" }}>
+        <div style={{ textAlign: "center", marginBottom: "24px" }}>
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "10px",
+              background: "linear-gradient(135deg, #3987e5, #0ca30c)",
+              margin: "0 auto 14px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 700,
+              fontSize: "18px"
+            }}
+          >
+            R
+          </div>
+          <h2 style={{ margin: 0, fontSize: "20px" }}>Create your account</h2>
+          <p style={{ margin: "6px 0 0", fontSize: "13px", color: "var(--text-secondary)" }}>
+            Start routing payments through Relay
+          </p>
         </div>
-        <div style={{ marginBottom: "12px" }}>
-          <label style={{ display: "block", marginBottom: "4px" }}>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
-          />
-        </div>
-        <div style={{ marginBottom: "16px" }}>
-          <label style={{ display: "block", marginBottom: "4px" }}>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
-          />
-        </div>
-        <button
-          type="submit"
-          style={{ width: "100%", padding: "10px", cursor: "pointer" }}
-        >
-          Sign Up
-        </button>
-      </form>
-      <p style={{ marginTop: "16px", fontSize: "14px" }}>
-        Already have an account?{" "}
-        <button
-          type="button"
-          onClick={onNavigateLogin}
-          style={{ background: "none", border: "none", color: "blue", cursor: "pointer", textDecoration: "underline", padding: 0 }}
-        >
-          Log in
-        </button>
-      </p>
+
+        {error && (
+          <p
+            style={{
+              color: "var(--critical)",
+              fontSize: "13px",
+              background: "rgba(208,59,59,0.1)",
+              border: "1px solid rgba(208,59,59,0.3)",
+              borderRadius: "8px",
+              padding: "8px 10px",
+              marginBottom: "14px"
+            }}
+          >
+            {error}
+          </p>
+        )}
+        {success && (
+          <p
+            style={{
+              color: "var(--good)",
+              fontSize: "13px",
+              background: "rgba(12,163,12,0.1)",
+              border: "1px solid rgba(12,163,12,0.3)",
+              borderRadius: "8px",
+              padding: "8px 10px",
+              marginBottom: "14px"
+            }}
+          >
+            {success}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: "14px" }}>
+            <label className="label">Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              style={{ width: "100%", padding: "10px 12px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "14px" }}>
+            <label className="label">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{ width: "100%", padding: "10px 12px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "20px" }}>
+            <label className="label">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{ width: "100%", padding: "10px 12px" }}
+            />
+          </div>
+          <button type="submit" className="btn-primary" style={{ width: "100%" }}>
+            Sign Up
+          </button>
+        </form>
+
+        <p style={{ marginTop: "18px", fontSize: "13px", textAlign: "center", color: "var(--text-secondary)" }}>
+          Already have an account?{" "}
+          <button
+            type="button"
+            onClick={onNavigateLogin}
+            style={{ background: "none", color: "var(--accent)", padding: 0, fontSize: "13px" }}
+          >
+            Log in
+          </button>
+        </p>
+      </div>
     </div>
   );
 }

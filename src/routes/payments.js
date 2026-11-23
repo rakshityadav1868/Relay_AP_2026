@@ -60,6 +60,19 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+router.get("/", auth, async (req, res) => {
+  try {
+    const payments = await prisma.payment.findMany({
+      where: { userId: req.user.id },
+      orderBy: { createdAt: "desc" }
+    });
+
+    res.json(payments);
+  } catch (err) {
+    res.status(500).json({ error: "something went wrong" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id);
