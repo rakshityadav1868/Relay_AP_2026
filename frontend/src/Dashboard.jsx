@@ -17,7 +17,7 @@ export default function Dashboard({ onLogout }) {
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <Sidebar active={active} onNavigate={setActive} onLogout={handleLogout} />
-      <div style={{ flex: 1, padding: "28px 32px", maxWidth: "1000px" }}>
+      <div style={{ flex: 1, padding: "28px 36px", width: "100%" }}>
         {active === "overview" && <Overview />}
         {active === "payments" && <Payments />}
         {active === "providerKeys" && <ProviderKeys />}
