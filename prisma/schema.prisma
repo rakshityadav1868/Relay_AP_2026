@@ -12,6 +12,9 @@ model User {
   name         String
   email        String    @unique
   passwordHash String    @map("password_hash")
+  stripeSecretKey     String?  @map("stripe_secret_key")
+  razorpayKeyId       String?  @map("razorpay_key_id")
+  razorpayKeySecret   String?  @map("razorpay_key_secret")
   createdAt    DateTime  @default(now()) @map("created_at")
   apiKeys      ApiKey[]
   payments     Payment[]

@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth");
 const apiKeyRoutes = require("./routes/apiKeys");
 const paymentRoutes = require("./routes/payments");
 const webhookRoutes = require("./routes/webhooks");
+const providerKeyRoutes = require("./routes/providerKeys");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/api-keys", apiKeyRoutes);
 app.use("/payments", paymentRoutes);
+app.use("/provider-keys", providerKeyRoutes);
 
 app.get("/", (req, res) => {
   res.send("Relay API");
