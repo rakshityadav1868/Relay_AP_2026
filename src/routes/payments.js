@@ -2,25 +2,28 @@ const express = require("express");
 const Stripe = require("stripe");
 const Razorpay = require("razorpay");
 const prisma = require("../db");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "placeholder"
-});
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   try {
-    const { amount, currency, provider } = req.body;
+    const { amount, currency, country } = req.body;
+    let provider = req.body.provider;
 
-    if (!amount || !provider) {
+    if (!amount) {
       return res.status(400).json({ error: "missing required fields" });
+    }
+
+    if (!provider) {
+      const isIndia = country === "IN" || (currency || "").toUpperCase() === "INR";
+      provider = isIndia ? "razorpay" : "stripe";
     }
 
     let providerRef = null;
 
     if (provider === "stripe") {
+      const stripe = new Stripe(req.user.stripeSecretKey || process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
       const intent = await stripe.paymentIntents.create({
         amount: Math.round(parseFloat(amount) * 100),
         currency: (currency || "inr").toLowerCase()
@@ -29,6 +32,10 @@ router.post("/", async (req, res) => {
     }
 
     if (provider === "razorpay") {
+      const razorpay = new Razorpay({
+        key_id: req.user.razorpayKeyId || process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder",
+        key_secret: req.user.razorpayKeySecret || process.env.RAZORPAY_KEY_SECRET || "placeholder"
+      });
       const order = await razorpay.orders.create({
         amount: Math.round(parseFloat(amount) * 100),
         currency: currency || "INR"
@@ -38,7 +45,7 @@ router.post("/", async (req, res) => {
 
     const payment = await prisma.payment.create({
       data: {
-        userId: req.user ? req.user.id : 1,
+        userId: req.user.id,
         amount: parseFloat(amount),
         currency: currency || "INR",
         provider,

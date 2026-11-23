@@ -5,7 +5,8 @@ const API_URL = "http://localhost:3000/payments";
 export default function Payments() {
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("INR");
-  const [provider, setProvider] = useState("stripe");
+  const [provider, setProvider] = useState("auto");
+  const [country, setCountry] = useState("IN");
   const [error, setError] = useState("");
   const [createdPayment, setCreatedPayment] = useState(null);
   const [searchId, setSearchId] = useState("");
@@ -22,7 +23,12 @@ export default function Payments() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ amount, currency, provider })
+        body: JSON.stringify({
+          amount,
+          currency,
+          country,
+          provider: provider === "auto" ? undefined : provider
+        })
       });
       const data = await res.json();
 
@@ -82,12 +88,23 @@ export default function Payments() {
           />
         </div>
         <div style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", marginBottom: "4px" }}>Customer Country:</label>
+          <input
+            type="text"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            placeholder="IN, US, etc."
+            style={{ padding: "8px", width: "100%", boxSizing: "border-box" }}
+          />
+        </div>
+        <div style={{ marginBottom: "10px" }}>
           <label style={{ display: "block", marginBottom: "4px" }}>Provider:</label>
           <select
             value={provider}
             onChange={(e) => setProvider(e.target.value)}
             style={{ padding: "8px", width: "100%", boxSizing: "border-box" }}
           >
+            <option value="auto">Auto (route by country)</option>
             <option value="stripe">Stripe</option>
             <option value="razorpay">Razorpay</option>
           </select>
