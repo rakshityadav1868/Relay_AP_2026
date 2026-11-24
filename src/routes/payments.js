@@ -53,7 +53,8 @@ router.post("/", auth, async (req, res) => {
       });
       const order = await razorpay.orders.create({
         amount: Math.round(parseFloat(amount) * 100),
-        currency: currency || "INR"
+        currency: currency || "INR",
+        payment_capture: 1
       });
       providerRef = order.id;
     }
