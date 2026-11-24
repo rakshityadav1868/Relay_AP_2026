@@ -21,19 +21,34 @@ router.post("/", auth, async (req, res) => {
     }
 
     let providerRef = null;
+    let checkoutUrl = null;
+    let razorpayKeyId = null;
 
     if (provider === "stripe") {
       const stripe = new Stripe(req.user.stripeSecretKey || process.env.STRIPE_SECRET_KEY || "sk_test_placeholder");
-      const intent = await stripe.paymentIntents.create({
-        amount: Math.round(parseFloat(amount) * 100),
-        currency: (currency || "inr").toLowerCase()
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: (currency || "inr").toLowerCase(),
+              product_data: { name: "Relay Payment" },
+              unit_amount: Math.round(parseFloat(amount) * 100)
+            },
+            quantity: 1
+          }
+        ],
+        success_url: `${process.env.FRONTEND_URL || "http://localhost:5173"}/?paid=1`,
+        cancel_url: `${process.env.FRONTEND_URL || "http://localhost:5173"}/?cancelled=1`
       });
-      providerRef = intent.id;
+      providerRef = session.id;
+      checkoutUrl = session.url;
     }
 
     if (provider === "razorpay") {
+      razorpayKeyId = req.user.razorpayKeyId || process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder";
       const razorpay = new Razorpay({
-        key_id: req.user.razorpayKeyId || process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder",
+        key_id: razorpayKeyId,
         key_secret: req.user.razorpayKeySecret || process.env.RAZORPAY_KEY_SECRET || "placeholder"
       });
       const order = await razorpay.orders.create({
@@ -54,7 +69,7 @@ router.post("/", auth, async (req, res) => {
       }
     });
 
-    res.status(201).json(payment);
+    res.status(201).json({ ...payment, checkoutUrl, razorpayKeyId });
   } catch (err) {
     console.error("POST /payments failed:", err.message || err);
     res.status(500).json({ error: "something went wrong" });

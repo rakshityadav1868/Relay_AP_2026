@@ -19,13 +19,13 @@ router.post("/stripe", express.raw({ type: "application/json" }), async (req, re
     return res.status(400).json({ error: "invalid signature" });
   }
 
-  const intent = event.data.object;
+  const session = event.data.object;
 
-  if (event.type === "payment_intent.succeeded" || event.type === "payment_intent.payment_failed") {
-    const status = event.type === "payment_intent.succeeded" ? "succeeded" : "failed";
+  if (event.type === "checkout.session.completed" || event.type === "checkout.session.expired") {
+    const status = event.type === "checkout.session.completed" ? "succeeded" : "failed";
 
     const payment = await prisma.payment.findUnique({
-      where: { providerRef: intent.id }
+      where: { providerRef: session.id }
     });
 
     if (payment) {

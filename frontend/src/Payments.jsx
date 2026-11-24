@@ -67,6 +67,38 @@ export default function Payments() {
     }
   };
 
+  const loadRazorpayScript = () =>
+    new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+
+  const payWithRazorpay = async (payment) => {
+    const ok = await loadRazorpayScript();
+    if (!ok) {
+      setError("Could not load Razorpay checkout");
+      return;
+    }
+
+    const rzp = new window.Razorpay({
+      key: payment.razorpayKeyId,
+      amount: Math.round(parseFloat(payment.amount) * 100),
+      currency: payment.currency,
+      order_id: payment.providerRef,
+      name: "Relay Payment",
+      handler: () => checkStatus(payment.id),
+      modal: { ondismiss: () => checkStatus(payment.id) }
+    });
+    rzp.open();
+  };
+
   const checkStatus = async (id) => {
     if (!id) return;
     setError("");
@@ -168,6 +200,24 @@ export default function Payments() {
                 />
                 {createdPayment.status}
               </p>
+              {createdPayment.status === "pending" && createdPayment.checkoutUrl && (
+                <a
+                  href={createdPayment.checkoutUrl}
+                  className="btn-primary"
+                  style={{ display: "inline-block", marginTop: "8px", marginRight: "8px", textDecoration: "none" }}
+                >
+                  Pay with Stripe
+                </a>
+              )}
+              {createdPayment.status === "pending" && createdPayment.provider === "razorpay" && createdPayment.razorpayKeyId && (
+                <button
+                  onClick={() => payWithRazorpay(createdPayment)}
+                  className="btn-primary"
+                  style={{ marginTop: "8px", marginRight: "8px" }}
+                >
+                  Pay with Razorpay
+                </button>
+              )}
               <button
                 onClick={() => checkStatus(createdPayment.id)}
                 className="btn-ghost"
