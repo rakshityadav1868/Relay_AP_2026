@@ -5,6 +5,7 @@ import ApiKeys from "./ApiKeys";
 import Payments from "./Payments";
 import WebhookEvents from "./WebhookEvents";
 import ProviderKeys from "./ProviderKeys";
+import Docs from "./Docs";
 
 export default function Dashboard({ onLogout }) {
   const [active, setActive] = useState("overview");
@@ -23,6 +24,7 @@ export default function Dashboard({ onLogout }) {
         {active === "providerKeys" && <ProviderKeys />}
         {active === "apiKeys" && <ApiKeys />}
         {active === "webhooks" && <WebhookEvents />}
+        {active === "docs" && <Docs />}
       </div>
     </div>
   );
