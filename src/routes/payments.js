@@ -56,6 +56,7 @@ router.post("/", auth, async (req, res) => {
 
     res.status(201).json(payment);
   } catch (err) {
+    console.error("POST /payments failed:", err.message || err);
     res.status(500).json({ error: "something went wrong" });
   }
 });
